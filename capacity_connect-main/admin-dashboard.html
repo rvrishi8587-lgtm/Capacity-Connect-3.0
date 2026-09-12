@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capacity Connect — Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin-dashboard">
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">📚</div>
+          <span>Capacity Connect</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="admin-dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="admin-dashboard.html#users"><span class="nav-icon">👥</span> Users</a>
+        <a href="admin-dashboard.html#courses"><span class="nav-icon">📖</span> Courses</a>
+        <a href="admin-dashboard.html#trainerRequirements"><span class="nav-icon">👨‍🏫</span> Trainer Requirements</a>
+        <a href="admin-dashboard.html#analytics"><span class="nav-icon">📊</span> Analytics</a>
+        <a href="#" onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="topbar">
+        <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Admin Dashboard</h1>
+        <div class="user-info"><button class="notification-bell" onclick="document.getElementById('adminNotificationsPanel').classList.toggle('show')">🔔 <span id="notificationCount" class="notification-count">0</span></button><div class="notification-panel" id="adminNotificationsPanel"><div class="notification-panel-head">Notifications</div><div id="adminNotifications"></div></div>
+          <div class="user-avatar">A</div>
+          <span id="userName">Admin</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div class="stat-value" id="statTotalUsers">0</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🎓</div>
+          <div class="stat-value" id="statTrainees">0</div>
+          <div class="stat-label">Total Trainees</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">👨‍🏫</div>
+          <div class="stat-value" id="statTrainers">0</div>
+          <div class="stat-label">Total Trainers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon cyan">📖</div>
+          <div class="stat-value" id="statCourses">0</div>
+          <div class="stat-label">Total Courses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">📝</div>
+          <div class="stat-value" id="statEnrollments">0</div>
+          <div class="stat-label">Total Enrollments</div>
+        </div>
+      </div>
+
+      <!-- Trainer Requirements -->
+      <div class="section" id="trainerRequirements">
+        <div class="section-header"><div><h2>Hire a Trainer / Trainer Requirements</h2><p class="section-subtitle">Create, manage and fill training requirements.</p></div></div>
+        <form class="dashboard-form hiring-form" id="trainerRequirementForm">
+          <div class="form-grid-2"><div class="form-group"><label>Requirement / Role Title</label><input id="reqTitle" placeholder="Python & Machine Learning Trainer" required></div><div class="form-group"><label>Training Topic / Course Name</label><input id="reqCourse" placeholder="Python & Machine Learning" required></div></div>
+          <div class="form-group"><label>Required Competencies / Skills</label><input id="reqSkills" placeholder="Python, Machine Learning, Data Science" required></div>
+          <div class="form-grid-2"><div class="form-group"><label>Required Qualification</label><input id="reqQualification" placeholder="B.Tech / MCA / M.Tech or relevant" required></div><div class="form-group"><label>Minimum Experience</label><input id="reqMinExperience" placeholder="2 years" required></div></div>
+          <div class="form-grid-2"><div class="form-group"><label>Preferred Experience</label><input id="reqPreferredExperience" placeholder="3+ years preferred"></div><div class="form-group"><label>Number of Trainers Required</label><input id="reqTrainerCount" type="number" min="1" value="1" required></div></div>
+          <div class="form-grid-2"><div class="form-group"><label>Training Duration</label><input id="reqDuration" placeholder="4 weeks" required></div><div class="form-group"><label>Expected Start Date</label><input id="reqStartDate" type="date" required></div></div>
+          <div class="form-grid-2"><div class="form-group"><label>Application Deadline</label><input id="reqDeadline" type="date"></div><div></div></div>
+          <div class="form-group"><label>Description / Job Requirements</label><textarea id="reqDescription" placeholder="Describe the training assignment and responsibilities" required></textarea></div>
+          <div class="form-group"><label>Additional Requirements</label><textarea id="reqAdditional" placeholder="Location, delivery mode, language, etc."></textarea></div>
+          <button type="submit" class="btn btn-primary">Post Requirement</button>
+        </form>
+        <div class="section-header inner-section-header"><h3>Active Trainer Requirements</h3></div>
+        <div id="adminRequirementsList"></div>
+      </div>
+
+      <!-- User Management -->
+      <div class="section" id="users">
+        <div class="section-header">
+          <h2>User Management</h2>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- All Courses -->
+      <div class="section" id="courses">
+        <div class="section-header">
+          <h2>All Courses on Platform</h2>
+        </div>
+        <div class="courses-grid" id="allCoursesList"></div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="section" id="analytics">
+        <div class="section-header">
+          <h2>Platform Analytics</h2>
+        </div>
+        <div id="analyticsContent"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getCurrentUser();
+      if (!user) return;
+      // Render all courses
+      const coursesContainer = document.getElementById('allCoursesList');
+      const courses = getCourses();
+      if (courses.length === 0) {
+        coursesContainer.innerHTML = '<p class="empty-state">No courses on the platform yet.</p>';
+      } else {
+        coursesContainer.innerHTML = courses.map(c => `
+          <div class="course-card">
+            <div class="course-icon">${c.icon || '📘'}</div>
+            <h3>${escapeHtml(c.title)}</h3>
+            <p class="course-desc">${escapeHtml(c.description)}</p>
+            <div class="course-meta">
+              <span class="badge ${difficultyClass(c.difficulty)}">${c.difficulty}</span>
+              <span class="badge badge-neutral">${escapeHtml(c.trainerName)}</span>
+            </div>
+            <div class="course-stats">
+              <span>👥 ${getEnrollments().filter(e => e.courseId === c.id).length} enrolled</span>
+              <span>❓ ${getQuestionsByCourse(c.id).length} questions</span>
+            </div>
+          </div>`).join('');
+      }
+      // Analytics
+      const analyticsContainer = document.getElementById('analyticsContent');
+      const enrollments = getEnrollments();
+      const results = getResults();
+      const avgScore = results.length > 0 ? Math.round(results.reduce((s, r) => s + r.percentage, 0) / results.length) : 0;
+      const totalQuestions = getQuestions().length;
+      const totalAssessmentsTaken = results.length;
+      analyticsContainer.innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">📝</div>
+            <div class="stat-value">${totalQuestions}</div>
+            <div class="stat-label">Total MCQ Questions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-value">${totalAssessmentsTaken}</div>
+            <div class="stat-label">Assessments Taken</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber">📊</div>
+            <div class="stat-value">${avgScore}%</div>
+            <div class="stat-label">Platform Avg Score</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon cyan">📚</div>
+            <div class="stat-value">${enrollments.length}</div>
+            <div class="stat-label">Total Enrollments</div>
+          </div>
+        </div>`;
+    });
+  </script>
+</body>
+</html>
